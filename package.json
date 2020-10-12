@@ -1,0 +1,21 @@
+{
+  "name": "sand-web-app",
+  "version": "0.0.1",
+  "description": "sand web app",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production -c",
+    "dev": "webpack --mode development -c"
+  },
+  "keywords": [],
+  "author": "zhuxp",
+  "license": "GPL",
+  "dependencies": {
+    "@nucleome/nb-dispatch": "0.0.8",
+    "golden-layout": "^1.5.9"
+  },
+  "devDependencies": {
+    "webpack": "latest",
+    "webpack-cli": "^3.3.10"
+  }
+}

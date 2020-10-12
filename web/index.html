@@ -1,0 +1,416 @@
+<html>
+
+<head>
+  <title id="title">Web App 101</title>
+  <meta charset="UTF-8">
+  <link rel="manifest" href="/manifest.json"> 
+  
+<script>
+  if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+  }
+</script>
+
+<script type="text/javascript" src="./lib/jquery.min.js"></script>
+<script type="text/javascript" src="./lib/jquery-ui.min.js"></script>
+<script type="text/javascript" src="./lib/d3.v5.min.js"></script>
+<script type="text/javascript" src="./lib/localforage.min.js"></script>
+<script type="text/javascript" src="./lib/bootstrap.min.js"></script>
+<!--
+    TODO Remove Above 
+<script type="text/javascript" src="/lib/jquery.tablednd.js"></script>
+
+
+
+-->
+
+<script>
+  if (window.module) module = window.module;
+</script>
+
+<script type="text/javascript" src="./sand.js"></script>
+<link rel="stylesheet" href="./style/bootstrap.min.css">
+<link rel="stylesheet" href="./style/goldenlayout-base.css">
+<!--
+<link rel="stylesheet" href="/css/jquery-ui.min.css">
+<link rel="stylesheet" href="/css/awesomplete.min.css">
+<style>
+  .dg .c input[type=text] {
+
+    line-height: normal;
+  }
+
+  .dg .c div {
+    box-sizing: content-box;
+  }
+</style>
+-->
+
+  <link rel="stylesheet" href="./style/sand.base.css">
+  <link rel="stylesheet" href="./style/sand.light.css">
+  <link rel="stylesheet" href="./style/snow.css"> 
+ <!-- 
+  <link rel="stylesheet" href="/local/style/handsontable.min.css"> 
+  <link rel="stylesheet" href="/static/css/robotomono.css"> 
+  <link rel="stylesheet" href="/static/css/dat-gui-nb-theme.css"> 
+ -->
+<style>
+.hide {
+    display:none;
+}
+</style>
+</head>
+
+<body style="height:100%">
+  
+<div class="menu fn-clear">
+  <ul id="myNavLeft">
+    <li id="home"  title="Home" class="mainWinOnly" data-toggle="tooltip" data-placement="right"><span class="glyphicon glyphicon-home"></span></li>
+    <span class="split"></span>
+      <li title="Add Panel"id="addPanel" data-toggle="tooltip" data-placement="right" >
+      <span class="glyphicon glyphicon-plus"></span>
+      <div class="frame">
+        <ul id="renders">
+        </ul>
+        <ul>
+          <li id="openExt" title="Extended Window" data-toggle="tooltip" data-placement="bottom" ><span class="glyphicon glyphicon-plus-sign"></span> Extended Window</li>
+        </ul>
+      </div>
+      
+    </li>
+     <li id="space" title="Panel Space" data-toggle="tooltip" data-placement="right">
+      <span class='glyphicon glyphicon-th-large'></span>
+    </li>
+    
+    <li style="display:none"  title="hide panel header"><span id="fixedToggle" class="glyphicon glyphicon-pushpin"></li>
+  </ul>
+
+  <ul id="myNavLeft2">
+        <span class="split"></span>
+        <li id="sessions"  title="Session in Local" data-toggle="tooltip" data-placement="right" class="mainWinOnly">
+        <span class="glyphicon glyphicon-hdd" id="sessionUi"></span>
+        <div class="frame" id="sessionFrame">
+         <!-- 
+          <ul>
+            <li id="share" title="Share session by generated URL" data-toggle="tooltip" data-placement="bottom" ><span class="glyphicon glyphicon-share-alt" title="share session"></span> Share Session </li>
+          </ul>
+         -->
+          <ul id="fileUi">
+            <li id="import" title="Load session" data-toggle="tooltip" data-placement="bottom" ><span class="glyphicon glyphicon-open"></span> Load Session</li>
+            <li id="export" title="Save session" data-toggle="tooltip" data-placement="bottom" ><span class="glyphicon glyphicon-save"></span> Save Session</li>
+            <!--
+            <li id="manage" title="Manage session" data-toggle="tooltip" data-placement="bottom" ><span class="glyphicon glyphicon-wrench"></span> Manage Session</li>
+            -->
+            </u1>
+        </div>
+      </li>
+    <div id="devMode" style="display:none"> 
+    <li style="padding-right:0px"  title="Login with Google" data-toggle="tooltip" data-placement="right" id="menuUser" class="mainWinOnly">
+        <span id="login" class="glyphicon glyphicon-log-in" >
+    </li>
+    </div>
+</ul>
+<ul id="extWinNav">
+</ul>
+<ul id="myNavRight" class="mainWinOnly" style="float:right">
+  <li id="extension" style="display: none">
+    <a href="https://chrome.google.com/webstore/detail/nbrowser-plugin/djcdicpaejhpgncicoglfckiappkoeof" target="_blank"><img src="/static/image/extension_install.png"  style="height:18px;width:18px;margin:7px 4px" title="install chrome extension"></img></a>
+  </li>
+</ul>
+<span style="float:right">
+</span>
+</div>
+ 
+    <div id="notify" class="hide" style="font-size:18px;height:30px">A new version of this app is available. Click <a id="reload">here</a> to update.</div>
+  
+<div id="wrapper" style="height:calc(100%-20px)">
+  <div id="menuContainer" style="display:none"></div>
+  <div id="layoutContainer" style="left:0%;width:100%"></div>
+</div>
+ 
+  
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Continue your browsing session?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Previous local session detected.
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="loadSession" class="btn btn-primary">Load</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+  
+
+<div class="modal fade" id="modalLoad" tabindex="-1" role="dialog" aria-labelledby="modalLoadTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLoadTitle">Load</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalLoadBody">
+        <ul id="sheetList" class="modal-ul">
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="loadModalBtn" class="btn btn-primary">Load</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+  
+
+<div class="modal fade" id="modalSave" tabindex="-1" role="dialog" aria-labelledby="modalSaveTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSaveTitle">Save Session</h5>
+        
+      </div>
+      <div class="modal-body" id="modalSaveBody">
+        <table style="width:100%">
+        <tr>
+        <td style="vertical-align:top;padding:5px">
+          <label>Id
+          </label>
+        </td>
+        <td>
+        <input id="modalSaveId" type="text" style="width:100%;margin:1px;padding:1px"></input>
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align:top;padding:5px">
+        <label>Note</label>
+      </td>
+      <td>
+        <textArea id="modalSaveNote" style="height:336px;width:100%;text-align:left;margin:1px;padding:1px;vertical-align:top"></textArea>
+      </td>
+    </tr>
+  </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="saveModalBtn" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<script>
+ // tod
+  var eventHub;
+  var url = window.location.href
+  var arr = url.split("/");
+  var domain = arr[0] + "//" + arr[2];
+  var server = ""; 
+  var app = {};
+  var sandUser
+  var sandHeaders = new Headers({})
+  ///var sandInits = {credentials:"include"}
+  var sandInits = {}
+  var mode
+  var win
+  var winid
+  var fixedLayout
+  var initedLayout
+  var lite = 0
+  var dev = 0
+  if (location.protocol != "https:") {
+      d3.selectAll(".httpsOnly").style("display","none")
+  }
+ 
+  (function($, d3, S) {
+     
+    mode = "web" 
+    dev = S.toolsGetUrlPara("dev") || 0
+      if (dev == 1) {
+          d3.select("#devMode").style("display","")
+      }
+    win = S.toolsGetUrlPara("win") || "main"
+    winid = S.toolsGetUrlPara("winid") || -1
+    fixedLayout = S.toolsGetUrlPara("fixedLayout") || 0 
+    initedLayout = S.toolsGetUrlPara("initedLayout") || undefined 
+    lite = S.toolsGetUrlPara("lite") || 0 
+    if (win == "ext") {
+      d3.select("body").classed("extWin",true)
+      $(".mainWinOnly").hide()
+      $("#title").text("Extend Window " + winid) 
+    } else {
+      d3.select("body").classed("mainWin",true)
+    }
+    var theme = S.initTheme();
+    
+    var snow = snow || sand
+    var renders = eval("snow.render"); 
+      var renderList = Object.keys(renders).sort(function(a,b){
+            return renders[a].idx - renders[b].idx 
+      })
+    var dispatch = d3.dispatch("sendMessage", "receiveMessage", "initWindows", "initPanels", "input", "resize", "sendState", "saveState", "add", "exportState", "exportStates", "exportStatesToFile", "setState", "importState", "importStates",
+      "openExt","closeExt","renderExtWinNav", "loadPanel",
+      "saveSession", "loadSession", "shareSession", "saveToSheet", "loadFromSheet", "saveToGSheet", "refreshWorkSpace")
+    var message = {}
+    var app = {}
+      
+
+
+    var M = S.initMenu().renders(renders).renderList(renderList).dispatch(dispatch);
+    M();
+    window.PanelManager = S.NewPanelManager()
+      .dispatch(dispatch)
+      .renders(renders)
+      .renderList(renderList)
+      .app(app)
+
+    PanelManager();
+
+    $('[data-toggle="tooltip"]').tooltip()
+    if (fixedLayout) {
+      document.body.className += ' ' + 'fixedLayout';
+    }
+    if (lite) {
+      document.body.className += ' ' + 'liteVersion';
+    }
+    var cfg = S.toolsGetUrlPara("config")
+    var W = S.NewWindowManager().dispatch(dispatch).theme(theme).domain(domain).P(PanelManager).win(win).config(cfg).extId("djcdicpaejhpgncicoglfckiappkoeof").initedLayout(initedLayout) 
+    W();
+    var emptyCfg = {
+      "settings": {
+        "showPopoutIcon": false
+      },
+      "dimensions": {
+        "borderWidth": 2
+      },
+      "content": [{
+        "type": "row",
+        "content": []
+      }]
+    }
+    
+
+    var _get = async function(d) {
+        if (renders[d]) {
+          emptyCfg.content[0].content.push({
+            "type": "component",
+            "componentName": "canvas",
+            "title": renders[d].label || d,
+            "componentState": {
+              "render": d,
+               "name": renders[d].label || d,
+            }
+          })
+        } else if (d.match(/space:\S+/)) {
+          var nbPanel = localforage.createInstance({
+            "name": "nbPanel"
+          })
+          var _id = d.split(":")[1]
+         await nbPanel.getItem(_id).then(function(d){
+           var d = JSON.parse(d)
+            emptyCfg.content[0].content.push({
+             "type": "component",
+            "componentName": "canvas",
+            "title": _id,
+             "componentState":d,
+            })
+         }).catch(function(e){
+             console.log(e)
+         })
+        } else if (d.match(/tracks:\S+/)) { 
+
+        }
+    }
+
+
+
+    if (!cfg && initedLayout) { 
+      var ds = initedLayout.split(",")
+      var _init = async function(){
+        for (var i=0;i<ds.length;i++) {
+          await _get(ds[i])         
+        } 
+        dispatch.call("initPanels", this, emptyCfg)
+      }
+      _init()
+    }
+    if (cfg) {
+        if (cfg.match(/gsheet:\S+:\S+/)) {
+            window._renderGsheet = function(d) {
+                var config = JSON.parse(d.table.rows[0].c[2].v)
+                if (config[-1] || config["states"]) { 
+                    dispatch.call("initWindows", this, config)
+                } else { 
+                    dispatch.call("initPanels", this, config)
+                }
+            }
+            var a = cfg.split(":")
+            S.gsheetQuery("select * where A='" + a[2] + "'", a[1], "_renderGsheet")
+        }
+        if (cfg.match(/localstorage:\S+/) ){
+            var a = cfg.split(":")
+            var sessionDb = localforage.createInstance({
+                "name": "nbSession"
+            })
+            sessionDb.getItem(a[1]).then(function(d){
+                dispatch.call("initWindows", this, JSON.parse(d.data))
+             })
+        }
+        
+        if (cfg != "continue" && !cfg.match(/localstorage:\S+/) && !cfg.match(/gsheet:\S+:\S+/)) {
+            $(".menu .note").hide()
+            fetch(server + cfg, sandInits)
+                .then(function(d){
+                    return d.json()
+                })
+                .then(function(config) {
+                if (config[-1] || config["states"]) { 
+                    dispatch.call("initWindows", this, config)
+                } else { 
+                    dispatch.call("initPanels", this, config)
+                }
+            }).catch(function(e){
+                console.log(e)
+                dispatch.call("initPanels", this, emptyCfg)
+            })
+        }
+    } 
+
+    if (!cfg && !initedLayout) {
+      if (win == "main") {
+        $(".menu .note").show()
+      }
+      dispatch.call("initPanels", this, emptyCfg)
+    }
+    
+
+    window.onresize = function() {
+        if ($("#menuContainer").css("display")=="block") {
+            $("#layoutContainer").css('width',"100%").css("width","-=200px").css("left", "200px")
+        }
+        dispatch.call("resize", this, {})
+    }
+    //history.pushState({},"main","/v1/main.html")
+
+  })(jQuery, d3, sand)
+</script>
+<!--
+<script type="text/javascript" src="/local/lib/onload.js"></script>
+
+<script type="text/javascript" src="/static/lib/app.js"></script>
+-->
+<html>
