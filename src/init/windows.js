@@ -1,7 +1,9 @@
-//import toolsDownload from "../tools/download"
+import toolsDownload from "../tools/download"
 import toolsUpload from "../tools/upload"
+
+//TODO ... 
 import {
-   dispatch as chan 
+    dispatch as chan
 } from "@nucleome/nb-dispatch";
 
 var isEmpty = function(layout) {
@@ -31,7 +33,7 @@ export default function() {
     var ws = {} //window handler
     var message = {}
     var idx = 1
-    var config 
+    var config
     var initedLayout = undefined
     var domain = ""
     var theme = "light"
@@ -64,7 +66,6 @@ export default function() {
     var getmessage = function(event) {
         if (event.origin !== domain) //TODO FIX
             return;
-
         var d = event.data
         if (d.code == "extMessage") { //external window to main window
             dispatch.call("receiveMessage", this, d.data)
@@ -117,7 +118,7 @@ export default function() {
                     dispatch.call("initWindows", this, JSON.parse(d))
                     $(".menu .note").hide()
                 }
-                if (d && !config && typeof initedLayout == "undefined") { 
+                if (d && !config && typeof initedLayout == "undefined") {
                     $("#myModal").modal("show");
                     d3.select("#loadSession").on("click", function() {
                         $("#myModal").modal("hide")
@@ -137,7 +138,7 @@ export default function() {
         }
         /* Bridge nb-chan with local dispatch 
          * */
-        //TODO : fix
+        //TODO : fix 
         var c = chan("update", "brush").extId(extId)
 
         c.connect(function(status) {
@@ -161,7 +162,8 @@ export default function() {
                 })
             }
             layout.root.contentItems[0].addChild(d);
-        })        /* TODO popup*/
+        }) 
+        /* TODO popup*/
         dispatch.on("openExt", function(d) {
             var w = window.open("./index.html?mode=web&win=ext&theme=" + theme + "&winid=" + idx, "external_" + idx, "width=1000,height=618")
             var id = idx //clone point
@@ -205,7 +207,6 @@ export default function() {
                 })
             })
         }
-        //TODO render win nav if it is ext windows
         if (win != "main" && window.opener) {
             var d = ["main"]
             d3.select("#extWinNav").selectAll("li")
@@ -321,6 +322,7 @@ export default function() {
             sessionDb.keys().then(function(d) {
                 var a = d3.select("#sheetList").selectAll("li").data(d);
                 var idx = 1;
+                var _c
                 a.enter()
                     .append("li")
                     .merge(a)
@@ -330,6 +332,7 @@ export default function() {
                     .on("click", function(d, i) {
                         d3.select("#sheetList").select(".selected").classed("selected", false)
                         d3.select(this).classed("selected", true)
+                        _c = d3.select(this)
                         idx = i + 1
                     })
                 a.exit().remove()
@@ -350,12 +353,32 @@ export default function() {
                         })
                     }
                 })
+
+                d3.select("#deleteModalBtn").on("click", function() {
+                    if (idx == -1) {
+                    } else {
+                        sessionDb.removeItem(d[idx - 1])
+                        _c.remove()
+                    
+                }})
+                d3.select("#downloadModalBtn").on("click", function() {
+                    if (idx == -1) {
+                    } else {
+                        sessionDb.getItem(d[idx - 1]).then(function(d) {
+                            //dispatch.call("do", this, json.parse(d.data))
+                            console.log(d)
+                            var fn = "test.json"
+                            toolsDownload(fn,d.data)
+                        })
+                    }
+                })
+
+
+
             })
             $("#modalLoad").modal("show");
-
         })
-
-
+        
         dispatch.on("initWindows", function(d) {
             dispatch.call("closeExt", this, {})
             $("#layoutContainer").empty();
@@ -383,7 +406,9 @@ export default function() {
             }
         })
     }
-    chart.initedLayout=function(_) {return arguments.length ? (initedLayout= _, chart) : initedLayout; }
+    chart.initedLayout = function(_) {
+        return arguments.length ? (initedLayout = _, chart) : initedLayout;
+    }
     chart.extId = function(_) {
         return arguments.length ? (extId = _, chart) : extId;
     }

@@ -141,7 +141,7 @@ export default function() {
             })
         })
         $("#manage").on("click", function(d) {
-            $("#modalManage").modal("show")
+            dispatch.call("manageStates")
         })
         
         var renderLis = d3.select("#renders").selectAll("li").data(renderList)

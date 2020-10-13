@@ -63,12 +63,10 @@
                 <span class="glyphicon glyphicon-hdd" id="sessionUi"></span>
                 <div class="frame" id="sessionFrame">
                     <ul id="fileUi">
-                        <li id="import" title="Load session" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-open"></span> Load Session
+                        <li id="import" title="Load/Manage session" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-open"></span> Load Session
                         </li>
                         <li id="export" title="Save session" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-save"></span> Save Session
                         </li>
-                        <li id="manage" title="Manage session" data-toggle="tooltip" data-placement="bottom"><span class="glyphicon glyphicon-wrench"></span> Manage
-                            Session</li>
                     </ul>
                 </div>
         </ul>
@@ -125,37 +123,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="loadModalBtn" class="btn btn-primary">Load</button>
+                    <button type="button" id="downloadModalBtn" class="btn btn-primary">Download</button>
+                    <button type="button" id="deleteModalBtn" class="btn btn-primary">Delete</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modalManage" tabindex="-1" role="dialog" aria-labelledby="modalManageTitle"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLoadTitle">Sessions</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-                </div>
-                <div class="modal-body" id="modalLoadBody">
-                    <ul id="sessionList" class="modal-ul">
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <!--
-                    <button type="button" id="loadModalBtn" class="btn btn-primary">Load</button>
-                    -->
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+    
 
     <div class="modal fade" id="modalSave" tabindex="-1" role="dialog" aria-labelledby="modalSaveTitle"
         aria-hidden="true">
@@ -255,7 +231,7 @@
             "initWindows", "initPanels", "input", "resize",
             "sendState", "saveState", "add", "exportState",
             "exportStates", "exportStatesToFile", "setState",
-            "importState", "importStates",
+            "importState", "importStates", "manageStates",
             "openExt", "closeExt", "renderExtWinNav", "loadPanel",
             "saveSession", "loadSession", "shareSession",
             "saveToSheet", "loadFromSheet", "saveToGSheet",
