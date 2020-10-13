@@ -4,29 +4,6 @@ export default function() {
     var renders
     var renderList
     var chart = function(el) {
-        var fixedToggle = false
-        $("#fixedToggle").click(function() {
-            fixedToggle = !fixedToggle;
-            if (fixedToggle) {
-                $(".lm_header").hide()
-                $(".lm_items").height("+=20")
-                $(".lm_item_container").height("+=20")
-                $(".lm_content").height("+=18")
-                $(this).css("color", "blue")
-                $(this).attr("title", "show panel header")
-                $("#openExt").closest("li").hide()
-                $("#addPanel").closest("li").hide()
-            } else {
-                $(".lm_header").show()
-                $(".lm_items").height("-=20")
-                $(".lm_item_container").height("-=20")
-                $(".lm_content").height("-=22")
-                $(this).css("color", "")
-                $(this).attr("title", "hide panel header")
-                $("#openExt").closest("li").show()
-                $("#addPanel").closest("li").show()
-            }
-        })
         var sign = false
         var TOHIDE
         $(".menu > ul > li").mouseover(function(event) {
@@ -59,15 +36,11 @@ export default function() {
             sign = false
         })
         //TODO
-        $("#home").on("click", function() {
-            window.location = "/entry/"
-        })
-
         var spaceOn = false
         var spaceUl = d3.select("#menuContainer").append("ul")
 
         /* using localforage */
-        /* TODO */
+        /* TODO Set DB Name */
         var panelDb = localforage.createInstance({
             "name": "nbPanel"
         })
@@ -168,137 +141,9 @@ export default function() {
             })
         })
         $("#manage").on("click", function(d) {
-            window.open("/entry/session")
+            $("#modalManage").modal("show")
         })
-
-        $("#login").on("click", function(d) {
-            window.location = "/login"
-        })
-        $("#logout").on("click", function(d) {
-            window.location = "/logout"
-        })
-        $.get("/profile", function(d) {
-            d = JSON.parse(d);
-            if (d.email) {
-                $("#logout").show();
-                $("#login").hide();
-                $("#menuUser1").show()
-                var name = d.name
-                if (name == "") {
-                    name = d.email
-                }
-                $("#picture").attr("src", d.picture).attr("title", name)
-            } else {
-                $("#logout").hide();
-                $("#login").show();
-                $("#menuUser1").hide();
-            }
-        }).fail(function() {
-            $("#logout").hide();
-            $("#login").hide();
-            $("#menuUser1").hide();
-
-        })
-        $("#share").on("click", function(_) {
-            dispatch.call("shareSession", this, _)
-        })
-        $("#saveToSheet").on("click", function(_) {
-
-            dispatch.call("saveToSheet", this, _)
-        })
-
-        $("#loadFromSheet").on("click", function(_) {
-            console.log("on click loadSheet")
-            dispatch.call("loadFromSheet", this, _)
-        })
-        var checkSheetId = function() {
-            d3.json("/getsheetid", {
-                credentials: 'same-origin'
-            }).then(function(d) {
-                if (d.sheetid && d.sheetid.length == 44) {
-                    d3.select("#setSheetId").style("color", null)
-                    d3.select("#createSheetId").style("display", "none")
-                    $("#sheetUi").show()
-                    //$("#fileUi").hide()
-                    //d3.select("#sessionUi").classed("glyphicon-hdd", false).classed("glyphicon-cloud", true)
-                } else {
-                    d3.select("#setSheetId").style("color", "#A20")
-                    d3.select("#createSheetId").style("display", null)
-                    $("#sheetUi").hide()
-                    //$("#fileUi").show()
-                    //d3.select("#sessionUi").classed("glyphicon-hdd", true).classed("glyphicon-cloud", false)
-                }
-            }).catch(function(d) {
-                $("#sheetUi").hide()
-                //$("#fileUi").show()
-                //d3.select("#sessionUi").classed("glyphicon-hdd", true).classed("glyphicon-cloud", false)
-            })
-        }
-        //setTimeout(checkSheetId, null, 200)
-        checkSheetId()
-        $("#createSheetId").on("click", function() {
-            $.ajaxSetup({
-                xhrFields: {
-                    withCredentials: true
-                },
-            });
-            $.post("/gsheets/create").done(function() {
-                checkSheetId()
-            })
-            $("#sessionFrame").hide()
-            alert("New google sheet created, you can save and load sessions in your google sheet")
-        })
-        $("#setSheetId").on("click", function(_) {
-            var setSheetId = function(id) {
-                if (id != null && id != "" && id.length == 44) {
-                    $.ajaxSetup({
-                        xhrFields: {
-                            withCredentials: true
-                        },
-                    });
-                    $.post("/setsheetid?id=" + id).done(function() {
-                        checkSheetId()
-                    })
-                } else if (id != null) {
-                    $.post("/setsheetid?id=" + "null").done(function() {
-                        checkSheetId()
-                    })
-                }
-            }
-            //if (!isAstilectron) {
-            d3.json("/getsheetid", {
-                credentials: 'same-origin'
-            }).then(function(d) {
-                //TODO
-                var id = prompt("sheetId", d.sheetid || "")
-                setSheetId(id)
-            }).catch(function(e) {
-                var id = prompt("sheetId", "")
-                setSheetId(id)
-            })
-
-            //}
-            /*
-            else {
-                var id = ""
-                d3.json("/getsheetid", {
-                    credentials: 'same-origin'
-                }).then(function(d) {
-                    if (d.sheetid) {
-                        $("#promptId").val(d.sheetid)
-                    } else {
-                        $("#promptId").val("")
-                    }
-                    $("#modalPrompt").modal("show");
-                    $("#promptOkBtn").click(function() {
-                        id = $("#promptId").val()
-                        $.post("/setsheetid?id=" + id).done(checkSheetId())
-                        $("#modalPrompt").modal("hide");
-                    })
-                })
-
-            }*/
-        })
+        
         var renderLis = d3.select("#renders").selectAll("li").data(renderList)
             .enter()
             .append("li")
@@ -312,7 +157,6 @@ export default function() {
             .attr("data-toggle","tooltip")
             .attr("data-placement","bottom")
             .on("click", function(d) {
-                console.log("click", d)
                 $(".menu .frame").hide();
                 if (renders[d].id) {
                     dispatch.call("add", this, factory(renders[d]))

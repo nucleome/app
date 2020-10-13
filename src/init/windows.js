@@ -109,7 +109,7 @@ export default function() {
                 dispatch.call("closeExt", this, {})
             }
             window.onload = function() {
-                var d = localStorage.getItem(sessionId)
+                var d = localStorage.getItem(sessionId) //TODO
                 if (!d && config == "continue") {
                     dispatch.call("initPanels", this, emptyCfg)
                 }
@@ -130,13 +130,14 @@ export default function() {
         if (win == "main") {
             $("#openExt").on("click", function() {
                 dispatch.call("openExt", this, {})
-                window.name = "cnbMain"
+                window.name = "main"
             })
         } else {
             $("#openExt").hide()
         }
         /* Bridge nb-chan with local dispatch 
          * */
+        //TODO : fix
         var c = chan("update", "brush").extId(extId)
 
         c.connect(function(status) {
@@ -150,11 +151,6 @@ export default function() {
         dispatch.on("sendMessage.apps", function(d) {
             c.call("sendMessage", this, d)
         })
-        /*
-        c.on("sendMessage.apps",function(){
-
-        })
-        */
 
         dispatch.on("loadPanel", function(d) {
             var layout = P.layout()
@@ -165,10 +161,9 @@ export default function() {
                 })
             }
             layout.root.contentItems[0].addChild(d);
-        })
-        /* TODO popup*/
+        })        /* TODO popup*/
         dispatch.on("openExt", function(d) {
-            var w = window.open("/v1/main.html?mode=web&win=ext&theme=" + theme + "&winid=" + idx, "external_" + idx, "width=1000,height=618")
+            var w = window.open("./index.html?mode=web&win=ext&theme=" + theme + "&winid=" + idx, "external_" + idx, "width=1000,height=618")
             var id = idx //clone point
             w.onbeforeunload = function() {
                 delete ws[id]
@@ -227,7 +222,7 @@ export default function() {
                     d3.select(this).classed("selected", false)
                 })
                 .on("click", function() {
-                    var goBack = window.open('', 'cnbMain');
+                    var goBack = window.open('', 'main');
                     goBack.focus();
                 })
                 .text("main")
@@ -276,97 +271,8 @@ export default function() {
             }
             return JSON.stringify(data)
         }
-        dispatch.on("shareSession", function() {
-            var data = _getStates();
-            $.ajaxSetup({
-                xhrFields: {
-                    withCredentials: true
-                },
-            });
-
-            $.post("/upload", data).done(function(d) {
-                var url = domain + "/v1/main.html?config=/share/" + d
-                console.log("Session URL", url)
-                prompt("Share Session within 7 days, Copy to clipboard: Ctrl+C, Enter", url)
-            })
-        })
-        var _saveToSheet = function(d) {
-            var data = _getStates();
-            var d = {
-                "id": d.id || "NoName",
-                "note": d.note || "Todo",
-                "data": data,
-            }
-            $.ajaxSetup({
-                xhrFields: {
-                    withCredentials: true
-                },
-            });
-
-            $.post("/uploadsheet", JSON.stringify(d)).done(function(d) {
-                if (d.error) {
-                    console.log("error todo", d)
-                }
-            })
-        }
-        dispatch.on("saveToSheet", function(d) {
-            $("#modalSave").modal("show");
-            d3.select("#saveModalBtn").on("click", function() {
-                //window.location="/v1/main.html?config=/sheet?idx="+idx //TODO to Reload
-                var d = {
-                    "id": d3.select("#modalSaveId").node().value,
-                    "note": d3.select("#modalSaveNote").node().value,
-                }
-                _saveToSheet(d)
-                $("#modalSave").modal("hide")
-            })
-        })
-        dispatch.on("loadFromSheet", function() {
-            d3.json("/sheetlist", {
-                credentials: 'same-origin'
-            }).then(function(d) {
-                console.log(d)
-                if (d.error) {
-                    console.log("error todo", d)
-                    return;
-                } else {
-                    console.log(d)
-                }
-                var a = d3.select("#sheetList").selectAll("li").data(d);
-                var idx = 1;
-                a.enter()
-                    .append("li")
-                    .merge(a)
-                    .text(function(d, i) {
-                        return i + " " + d[0];
-                    })
-                    .on("click", function(d, i) {
-                        d3.select("#sheetList").select(".selected").classed("selected", false)
-                        d3.select(this).classed("selected", true)
-                        idx = i + 1
-                    })
-                a.exit().remove()
-                d3.select("#loadModalBtn").on("click", function() {
-                    //window.location="/v1/main.html?config=/sheet?idx="+idx //TODO to Reload
-                    d3.json("/sheet?idx=" + idx, {
-                        credentials: 'same-origin'
-                    }).then(function(d) {
-                        var err = null //TODO
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            if (d.error) {
-                                console.log("error todo", d)
-                            } else {
-                                dispatch.call("initWindows", this, d)
-                            }
-                        }
-                    })
-                    $("#modalLoad").modal("hide")
-                })
-            })
-            $("#modalLoad").modal("show");
-
+        var sessionDb = localforage.createInstance({
+            "name": "nbSession"
         })
         dispatch.on("saveSession", function() {
             var data = _getStates()
@@ -375,55 +281,16 @@ export default function() {
             if (isEmpty(d1)) {
                 return //not override previous one if layout of main window is empty
             }
-            //console.log(d1)
             if (Object.keys(d).length > 1 || (d1.content.length > 0 && d1.content[0].content && d1.content[0].content.length > 0)) { //have window or panels;
                 localStorage.setItem(sessionId, data)
             } else {
                 console.log("remove session")
                 localStorage.removeItem(sessionId) //delete session...
             }
-
-            $.ajaxSetup({
-                xhrFields: {
-                    withCredentials: true
-                },
-            });
-
-            $.ajax({
-                url: "/setsession",
-                type: "POST",
-                data: data,
-                async: false,
-                success: function(msg) {
-                    console.log(msg)
-                }
-            })
-
-
         })
         dispatch.on("loadSession", function() {
             var d = localStorage.getItem(sessionId)
             dispatch.call("initWindows", this, JSON.parse(d))
-            $.ajaxSetup({
-                xhrFields: {
-                    withCredentials: true
-                },
-            });
-
-            $.ajax({
-                url: "/getsession",
-                async: false,
-                success: function(d) {
-                    console.log("getsession", d)
-                    $.ajax("/share/" + d.id, function(d) {
-                        console.log(d)
-                    })
-                }
-            })
-        })
-
-        var sessionDb = localforage.createInstance({
-            "name": "nbSession"
         })
 
 

@@ -74,7 +74,7 @@ export default function (config, el, dispatch, renders, app) {
       }
     };
     /* save panel to workspace */
-    var panelDb = localforage.createInstance({name:"nbPanel"})
+    var panelDb = localforage.createInstance({name:"nbPanel"}) //TODO set db name 
     var savePanel = function() {
       var container = stack.getActiveContentItem().container;
       var state = container.getState();
