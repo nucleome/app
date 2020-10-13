@@ -1,5 +1,7 @@
 import * as GoldenLayout from "golden-layout"
 import render from "../render"
+import config from "../config"
+const panelDbName = config.panelDb
 export default function (config, el, dispatch, renders, app) {
   var layout = new GoldenLayout(config, el);
   layout.registerComponent("canvas", function (container, state) {
@@ -74,7 +76,7 @@ export default function (config, el, dispatch, renders, app) {
       }
     };
     /* save panel to workspace */
-    var panelDb = localforage.createInstance({name:"nbPanel"}) //TODO set db name 
+    var panelDb = localforage.createInstance({name:panelDbName}) //TODO set db name 
     var savePanel = function() {
       var container = stack.getActiveContentItem().container;
       var state = container.getState();

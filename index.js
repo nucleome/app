@@ -1,4 +1,5 @@
 export{default as render} from "./src/render"
+export{default as config} from "./src/config"
 
 
 export{default as toolsDownload} from "./src/tools/download"

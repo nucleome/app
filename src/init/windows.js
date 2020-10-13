@@ -1,6 +1,7 @@
 import toolsDownload from "../tools/download"
 import toolsUpload from "../tools/upload"
-
+import config from "../config"
+const sessionDbName = config.scSession
 //TODO ... 
 import {
     dispatch as chan
@@ -29,7 +30,7 @@ export default function() {
     //var chromeExtPort //port to chromeExtID
     var extId
     var user
-    var sessionId = "_cnb_"
+    var sessionId = "_scb_"
     var ws = {} //window handler
     var message = {}
     var idx = 1
@@ -54,8 +55,8 @@ export default function() {
         "eletron",
         "saveSession",
         "loadSession",
-        "shareSession",
-        "saveToSheet",
+        //"shareSession",
+        //"saveToSheet",
         "loadPanel",
         "sendMessage",
         "receiveMessage"
@@ -273,7 +274,7 @@ export default function() {
             return JSON.stringify(data)
         }
         var sessionDb = localforage.createInstance({
-            "name": "nbSession"
+            "name": sessionDbName
         })
         dispatch.on("saveSession", function() {
             var data = _getStates()

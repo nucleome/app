@@ -1,4 +1,6 @@
 import factory from "../utils/factory"
+import config from "../config"
+const panelDbName = config.panelDb
 export default function() {
     var dispatch
     var renders
@@ -42,7 +44,7 @@ export default function() {
         /* using localforage */
         /* TODO Set DB Name */
         var panelDb = localforage.createInstance({
-            "name": "nbPanel"
+            "name": panelDbName
         })
         var renderSpaceList = function() {
             panelDb.keys().then(function(list) {

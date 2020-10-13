@@ -294,7 +294,7 @@
             {
                 var nbPanel = localforage.createInstance(
                 {
-                    "name": "nbPanel"
+                    "name": S.config.nbPanel
                 })
                 var _id = d.split(":")[1]
                 await nbPanel.getItem(_id).then(function(d)
@@ -358,7 +358,7 @@
                 var a = cfg.split(":")
                 var sessionDb = localforage.createInstance(
                 {
-                    "name": "nbSession"
+                    "name": S.config.nbSession //Change Code Here
                 })
                 sessionDb.getItem(a[1]).then(function(d)
                 {
@@ -402,8 +402,7 @@
             }
             dispatch.call("initPanels", this, emptyCfg)
         }
-
-
+        
         window.onresize = function()
         {
             if ($("#menuContainer").css("display") == "block")
