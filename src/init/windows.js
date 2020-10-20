@@ -139,7 +139,7 @@ export default function() {
         }
         /* Bridge nb-chan with local dispatch 
          * */
-        //TODO : fix 
+        //TODO : fix this  
         var c = chan("update", "brush").extId(extId)
 
         c.connect(function(status) {
