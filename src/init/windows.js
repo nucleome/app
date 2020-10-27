@@ -1,7 +1,9 @@
 import toolsDownload from "../tools/download"
 import toolsUpload from "../tools/upload"
+/*
 import config from "../config"
 const sessionDbName = config.scSession
+*/
 //TODO ... 
 import {
     dispatch as chan
@@ -25,12 +27,12 @@ var emptyCfg = {
     }]
 }
 
-export default function() {
+export default function(sessionDbName, sessionId) {
     //var chromeExtID //= "gedcoafficobgcagmjpplpnmempkcpfp"
     //var chromeExtPort //port to chromeExtID
     var extId
     var user
-    var sessionId = "_scb_"
+    // var sessionId = "_scb_"
     var ws = {} //window handler
     var message = {}
     var idx = 1

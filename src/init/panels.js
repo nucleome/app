@@ -1,5 +1,5 @@
 import NewLayout from "./layout"
-export default function() {
+export default function(panelDbName) {
   var dispatch
   var eventInited = new Event('inited')
   var renders
@@ -12,7 +12,7 @@ export default function() {
   var callback = function(){}
   var chart = function(el){
     var initPanels = function(config, el) {
-      layout = NewLayout(config, el, dispatch, renders, app)
+      layout = NewLayout(config, el, dispatch, renders, app, panelDbName)
       eventHub = layout.eventHub //TODO
       if (window) {
         window.layout = layout //TODO

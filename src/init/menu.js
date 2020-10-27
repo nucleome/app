@@ -1,7 +1,9 @@
 import factory from "../utils/factory"
-import config from "../config"
-const panelDbName = config.panelDb
-export default function() {
+
+// import config from "../config"
+// const panelDbName = config.panelDb
+
+export default function(panelDbName) {
     var dispatch
     var renders
     var renderList

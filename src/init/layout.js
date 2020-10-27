@@ -1,8 +1,11 @@
 import * as GoldenLayout from "golden-layout"
 import render from "../render"
+/*
 import config from "../config"
 const panelDbName = config.panelDb
-export default function (config, el, dispatch, renders, app) {
+*/
+
+export default function (config, el, dispatch, renders, app, panelDbName) {
   var layout = new GoldenLayout(config, el);
   layout.registerComponent("canvas", function (container, state) {
     var r = renders[state.render] || render[state.render] //Sand

@@ -18,12 +18,11 @@
     <script type="text/javascript" src="./lib/d3.v5.min.js"></script>
     <script type="text/javascript" src="./lib/localforage.min.js"></script>
     <script type="text/javascript" src="./lib/bootstrap.min.js"></script>
-
+    <script type="text/javascript" src="./lib/sand.js"></script>
     <script>
         if (window.module) module = window.module;
     </script>
 
-    <script type="text/javascript" src="./sand.js"></script>
     <link rel="stylesheet" href="./style/bootstrap.min.css">
     <link rel="stylesheet" href="./style/goldenlayout-base.css">
     <link rel="stylesheet" href="./style/sand.base.css">
@@ -174,14 +173,15 @@
 <script>
     // tod
     var eventHub;
+
+
     var url = window.location.href
     var arr = url.split("/");
     var domain = arr[0] + "//" + arr[2];
     var server = "";
     var app = {};
     var sandUser
-    var sandHeaders = new Headers(
-    {})
+    var sandHeaders = new Headers({})
     ///var sandInits = {credentials:"include"}
     var sandInits = {}
     var mode
@@ -195,9 +195,14 @@
     {
         //d3.selectAll(".httpsOnly").style("display", "none")
     }
-
+  
     (function($, d3, S)
     {
+        var snow = snow || sand
+        var renders = snow.render; 
+        var sessionDbName = snow.config.sessionDb   
+        var sessionId = snow.config.sessionId  
+        var panelDbName = snow.config.panelDb  
 
         mode = "web"
         dev = S.toolsGetUrlPara("dev") || 0
@@ -221,9 +226,7 @@
         }
         var theme = S.initTheme();
 
-        var snow = snow || sand
-        var renders = eval("snow.render");
-        var renderList = Object.keys(renders).sort(function(a, b)
+       var renderList = Object.keys(renders).sort(function(a, b)
         {
             return renders[a].idx - renders[b].idx
         })
@@ -238,10 +241,11 @@
             "refreshWorkSpace")
         var message = {}
         var app = {}
-        var M = S.initMenu().renders(renders).renderList(renderList).dispatch(
+        var M = S.initMenu(panelDbName).renders(renders).renderList(renderList).dispatch(
             dispatch);
         M();
-        window.PanelManager = S.NewPanelManager()
+
+        window.PanelManager = S.NewPanelManager(panelDbName)
             .dispatch(dispatch)
             .renders(renders)
             .renderList(renderList)
@@ -252,7 +256,7 @@
         $('[data-toggle="tooltip"]').tooltip()
 
         var cfg = S.toolsGetUrlPara("config")
-        var W = S.NewWindowManager().dispatch(dispatch).theme(theme).domain(
+        var W = S.NewWindowManager(sessionDbName,sessionId).dispatch(dispatch).theme(theme).domain(
             domain).P(PanelManager).win(win).config(cfg).extId(
             "djcdicpaejhpgncicoglfckiappkoeof").initedLayout(
             initedLayout)

@@ -13,7 +13,7 @@ module.exports = {
         extensions: ['*', '.js', '.jsx']
     },
     output: {
-        filename: './sand.js',
+        filename: './lib/sand.js',
         libraryTarget: 'umd',
         library: 'sand',
     },
